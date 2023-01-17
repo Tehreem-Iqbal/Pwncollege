@@ -1,0 +1,7 @@
+#include <stdio.h>
+int main(){
+
+//execve("/bin/sh", NULL, NULL);
+for (int i=0; i< 2048;i++)
+	printf("NOP\n");
+}
