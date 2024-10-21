@@ -1,2 +1,2 @@
 # Pwncollege
-Collection of pwncollege challenges
+Collection of pwncollege challenge solutions
