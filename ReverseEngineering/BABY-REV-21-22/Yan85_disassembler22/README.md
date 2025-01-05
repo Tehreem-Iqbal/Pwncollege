@@ -103,11 +103,90 @@ void shuffle_values()
 }
 ```
 
-22.0 was pretty simple to solve
+**22.0 was pretty simple to solve**
+
 So, I ran the challenge for differnt inputs and observed the trace outputs and guessed all the values.
 How did i check the instructions :
 ``` echo -e  '\x40\x02\x40' | ./babyrev-level-22-0 ```
 
 
 ![Screenshot from 2025-01-05 21-45-48](https://github.com/user-attachments/assets/7bce2022-76f2-4b52-a2d2-424d66bd2ebc)
+
 So, this output means 40 is a syscall opcode, 02 is open syscall and 40 is register d. So in this ways, i figured out all the opcode values. 
+Corresponding to my flag, the opcode values were 
+```
+01 stm 02 cmp 04 imm 08 stk 10 ldm 20 add 40 sys 80 jmp
+02 c 04 b 08 f 10 s 20 i 40 d 80 a
+20 sleep 40 readmem
+02 open 04 read_code
+08 exit 01 write
+```
+My instruction set looked something like this
+```
+# set "/flag" string in a,b,c and d registers 
+2f8004
+660404
+6C0204
+614004
+670804
+# push a,b,c,d to stack
+800008
+040008
+020008
+400008
+080008
+# set a to 1( pointing to the stack), b and c to 0 for opening in readonly mode 
+018004
+000404
+000204
+400240 # open, return value (file descriptor) in register d
+# set register a with value register d (fd), b (stack offset) , and c(no of bytes to read) and call read()
+008004
+408020
+660804
+ff0204
+404040 # read at b offset in stack
+# set a to 01 (standard output) and call write()
+018004
+400140
+```
+**Daaamn! 22.1 dont output any traceee....**
+As usual, went to discord server... The only hint i got was, yoou need to guess the opcodes by observing the behavior of program. And look for exit codes. 
+First of all, I checked for the instruction opcode pattern: arg1:arg2:operation. So, I started giving input and checking for the behavior and exit codes. If the exit code is 0, that means it did syscall exit
+  
+  - Tried for operation and arg1 combinations. For input: '\x10\x08\x80', exit code was 0. That means **80 is SYSCALL operation**. and **10 is the exit syscall**. For every other combination, the programm continued to run in a loop. Except for changing 04 as arg2. From this, i can guess that **04 is an unknown register**, I confirmed it by checking it for other combinations of arg1 and operation, it terminated at almost every other combination of input **BUT NOT ALL**.
+  - When i tried 08 and 40 as syscalls opcodes (arg1) with 04 as register (arg2) the program continued to run. Why? Because when the arg1 doesnt match any of the syscall opcode, it continuos, whether its a valid register or not in arg2. So, we guessed that 08 and 04 are unknown syscalls.
+  - Tried '\x04\x08\x80', turns out, the process is in sleep mode by checking ps -aux. Not sure that its sleep syscall because the process also showws S+ status if waiting for an input.
+  - After searching for more help on discord. Got another hint: ONLY JUMP AND IMM operations that take a non register argument. This implies that if the program doesnt terminate on 04 (unknown register) as arg2, its IMM instruction. And if it does not crash on 04 on both as arg1 and arg2, it will be JMP (but we have no need to find the jmp instruction). Whooo , we found the **IMM opcode 08** :v:
+  - Since, the exit status of exist syscall depend on register a, works as: ```exit(a)```, we can find the register a opcode. Setting an immidiate value in different register, and then do exit. If the exit code is the same value we placed in the register, that means its register a opcode. We found it, '\x08\xa0\x08' (imm a 10) and '\x10\x80\x80', exit code was 10.  
+  - Now, i had 4 remaining syscall whose opcode were to be find yet. open, read_code, read_mem, and write for 4 values 01, 02, 20, 80. Remember remaining codes we found to be unknowsn syscall, exit and sleep
+  - For open, I was sure the return value was ff for file not found. So, i checked exit status with different syscall opcodes.**01 is open() opcode**
+  - Now, bruetforced for STK operaation, setting "/flag" string on stack and calling open() and then exit(). If open returned a valid fd, we guess the STK opcode ie; 40
+  - I guessed register c by settung different values in remaining register opcodes. and one of it returned the same value. That was a hint that the returneed values indicates the corresponding register which contains this value.
+  - So, for reminig 3 syacll opcodes, i observed that on 80 and 02, the program continuos ans the status was S (sleep), that means both are trying to read from stdin. So i tried to input some garbage "A"*88 affter the program waits. The program returned 88. That gave a surety that, it read 88 bytes. I was sure it was read(). And the remaing opcode ie; 20 was for write() obviously. THAT WAS ALL I NEEDED TO READ THE FLAGG :yum:
+```
+082f08 #imm a '/'
+000840 # stk 0 a; push a 
+086608 #imm a 'f'
+000840 # stk 0 a; push a 
+086c08 #imm a 'l'
+000840 # stk 0 a; push a 
+086108 #imm a 'a' 
+000840 # stk 0 a; push a 
+086708 # imm a 'g'
+000840 # stk 0 a; push a
+
+080108 # imm a 01 ie; stack offset
+010880 # open , return value in a
+
+01ff08 # imm c ff ie; no of bytes to read
+020880 # read 
+
+080108 # imm a 01 ie; stdout
+200880 # write
+100880 # exit
+```
+
+
+
+
