@@ -1,0 +1,24 @@
+    // 0 - INST_IMM  0x01
+    // 1 - INST_STK  0x02
+    // 2 - INST_ADD  0x04
+    // 3 - INST_STM  0x08
+    // 4 - INST_LDM  0x10
+    // 5 - INST_JMP  0x20
+    // 6 - INST_CMP  0x40
+    // 7 - INST_SYS  0x80
+
+
+    // 0- SYS_OPEN  0x01
+    // 1- SYS_READ_MEMORY 0x02
+    // 2- SYS_READ_CODE 0x04
+    // 3- SYS_WRITE 0x08
+    // 4- SYS_SLEEP 0x10
+    // 5- SYS_EXIT 0x20
+
+    // 0 - REG_A 0x01
+    // 1 - REG_B 0x02
+    // 2 - REG_C 0x04
+    // 3 - REG_D 0x08
+    // 4 - REG_S 0x10
+    // 5 - REG_I 0x20
+    // 6 - REG_F 0x40

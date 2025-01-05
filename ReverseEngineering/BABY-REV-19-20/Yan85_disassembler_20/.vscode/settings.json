@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "flow.h": "c",
+        "stdio.h": "c"
+    }
+}
