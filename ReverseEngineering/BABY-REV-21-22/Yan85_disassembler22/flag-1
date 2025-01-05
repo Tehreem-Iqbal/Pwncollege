@@ -1,7 +1,0 @@
-[+] Starting local process '/challenge/babyrev-level-22-1': pid 65776
-/home/hacker/Documents/RevEng/yan85_22-1.py:4: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
-  output = yan85.recvuntil('yancode:')
-b'[+] Welcome to /challenge/babyrev-level-22-1!\n[+] This challenge is an custom emulator. It emulates a completely custom\n[+] architecture that we call "Yan85"! You\'ll have to understand the\n[+] emulator to understand the architecture, and you\'ll have to understand\n[+] the architecture to understand the code being emulated, and you will\n[+] have to understand that code to get the flag. Good luck!\n[+]\n[+] This level is a full Yan85 emulator. You\'ll have to reason about yancode,\n[+] and the implications of how the emulator interprets it!\n[?] This challenge is special! It randomizes the Yan85 VM based on\n[?] the value of the flag. This means that there is no way for you\n[?] to know the opcode and argument encodings...\n[?]\n[?] Keep in mind that the encoding that you observe in practice mode\n[?] is going to be different than the actual encoding, because the\n[?] practice mode flag is different. How will you adapt?\n[?]\n[?] Is there maybe a clever side channel you can utilize?\n[?] ... Done! VM is randomized!\n[!] This time, YOU\'RE in control! Please input your yancode:'
-Data sent
-[*] Process '/challenge/babyrev-level-22-1' stopped with exit code 255 (pid 65776)
-b' pwn.college{MnCLu-DJgcvwDzJ6bPAOA3mbQVz.QX4gjMsQDM5QzW}\n'
